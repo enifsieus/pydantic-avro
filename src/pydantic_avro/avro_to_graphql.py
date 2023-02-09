@@ -79,10 +79,6 @@ def avsc_to_graphql(schema: dict) -> str:
         classes[union_name] = current
         return union_name
 
-    ##todo(mje): type DataObservation @key(fields: "id") {
-    # APICall!FileSystemAccess!NetworkTransmission!SDKPresence!ServicePresence!PermissionGranted!PublishedCategory!!
-
-
     def enum_type_to_graphql(schema: dict) -> str:
         """Convert a single avro Enum type to a graphql Enum"""
         name = schema["name"]
@@ -90,7 +86,7 @@ def avsc_to_graphql(schema: dict) -> str:
 
         if len(schema["symbols"]) > 0:
             for symbol in schema["symbols"]:
-                current += f'    "{symbol}"\n'
+                current += f'    {symbol}\n'
 
         current += "}\n"
         classes[name] = current
