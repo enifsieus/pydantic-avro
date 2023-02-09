@@ -3,6 +3,7 @@ import sys
 from typing import List
 
 from pydantic_avro.avro_to_pydantic import convert_file
+from pydantic_avro.avro_to_graphql import convert_graphql
 
 
 def main(input_args: List[str]):
@@ -13,11 +14,16 @@ def main(input_args: List[str]):
     parser_cache.add_argument("--asvc", type=str, dest="avsc", required=True)
     parser_cache.add_argument("--output", type=str, dest="output")
 
+    parser_cache2 = subparsers.add_parser("avro_to_graphql")
+    parser_cache2.add_argument("--asvc", type=str, dest="avsc", required=True)
+    parser_cache2.add_argument("--output", type=str, dest="output")
+
     args = parser.parse_args(input_args)
 
     if args.sub_command == "avro_to_pydantic":
         convert_file(args.avsc, args.output)
-
+    elif args.sub_command == "avro_to_graphql":
+        convert_graphql(args.avsc, args.output)
 
 def root_main():
     main(sys.argv[1:])
