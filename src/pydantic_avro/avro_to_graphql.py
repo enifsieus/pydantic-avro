@@ -59,8 +59,6 @@ def avsc_to_graphql(schema: dict) -> str:
             record_type_to_graphql(t)
             py_type = t.get("name")
         elif t.get("type") == "map":
-            # There are no Dicts in graphql so JSONObject is our analog. We lose type enforcement though.
-            # value_type = get_graphql_type(t.get("values"))
             py_type = "JSONObject"
         else:
             raise NotImplementedError(
@@ -74,18 +72,24 @@ def avsc_to_graphql(schema: dict) -> str:
 
     def union_type_to_graphql(t: list) -> str:
         """Convert a single avro Union type to a graphql Union"""
-        name = "".join(t)
-        current = f'union {name} = {"|".join(t)}'
-        classes[name] = current
-        return name
+        names = list(map(get_graphql_type, t))
+        union_name = f'Union{"".join(names).replace("!", "")}'
+        value = " | ".join(names).replace("!", "")
+        current = f'union {union_name} = {value}'
+        classes[union_name] = current
+        return union_name
+
+    ##todo(mje): type DataObservation @key(fields: "id") {
+    # APICall!FileSystemAccess!NetworkTransmission!SDKPresence!ServicePresence!PermissionGranted!PublishedCategory!!
+
 
     def enum_type_to_graphql(schema: dict) -> str:
         """Convert a single avro Enum type to a graphql Enum"""
         name = schema["name"]
         current = f"enum {name} {{\n"
 
-        if len(schema["types"]) > 0:
-            for symbol in schema["symbol"]:
+        if len(schema["symbols"]) > 0:
+            for symbol in schema["symbols"]:
                 current += f'    "{symbol}"\n'
 
         current += "}\n"
