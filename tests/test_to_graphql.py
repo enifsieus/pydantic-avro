@@ -1,4 +1,5 @@
 from pydantic_avro.avro_to_graphql import avsc_to_graphql
+from ariadne import gql
 
 
 def test_avsc_to_graphql_empty():
@@ -14,9 +15,9 @@ scalar Time
 scalar UUID
 
 
-type Test {
-}"""
+type Test"""
     assert expected in graphql
+    assert gql(graphql)
 
 
 def test_avsc_to_graphql_primitive():
@@ -45,6 +46,7 @@ type Test {
 }"""
 
     assert expected in graphql
+    assert gql(graphql)
 
 
 def test_avsc_to_graphql_map():
@@ -62,6 +64,7 @@ type Test {
     col1: JSONObject!
 }"""
     assert expected in graphql
+    assert gql(graphql)
 
 ##todo(mje):
 ## GraphQL does not support Map types so we have two choices - return them as non-queryable JSON structures,
@@ -89,6 +92,7 @@ type Test {
     col1: JSONObject!
 }"""
     assert expected in graphql
+    assert gql(graphql)
 #     assert "class Test(BaseModel):\n" "    col1: Dict[str, Nested]" in graphql
 #     assert "class Nested(BaseModel):\n" "    col1: str" in graphql
 
@@ -119,6 +123,7 @@ type Test {
     col1: JSONObject!
 }"""
     assert expected in graphql
+    assert gql(graphql)
 #     assert "class Test(BaseModel):\n" "    col1: Dict[str, List[str]]" in graphql
 
 
@@ -160,6 +165,7 @@ type Test {
     col5: DateTime!
 }"""
     assert expected in graphql
+    assert gql(graphql)
 
 
 def test_avsc_to_graphql_complex():
@@ -193,10 +199,9 @@ def test_avsc_to_graphql_complex():
             ],
         }
     )
-    print(graphql)
+
     expected = """
-type Nested {
-}"""
+type Nested"""
     assert expected in graphql
 
     expected = """
@@ -206,6 +211,7 @@ type Test {
     col3: [Nested!]!
 }"""
     assert expected in graphql
+    assert gql(graphql)
 
 ##todo(mje): There are no defaults in graphql schemas for reads
 # def test_default():
@@ -256,6 +262,7 @@ enum Status {
     failed
 }"""
     assert expected in graphql
+    assert gql(graphql)
 
 
 def test_enums_reuse():
@@ -283,6 +290,7 @@ enum Status {
     failed
 }"""
     assert expected in graphql
+    assert gql(graphql)
 
 
 def test_unions():
@@ -316,3 +324,4 @@ def test_unions():
 
     assert "union UnionIntStringARecord = Int | String | ARecord" in graphql
     assert "a_union: UnionIntStringARecord" in graphql
+    assert gql(graphql)

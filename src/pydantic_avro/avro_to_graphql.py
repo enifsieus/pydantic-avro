@@ -106,14 +106,14 @@ def avsc_to_graphql(schema: dict) -> str:
                 key_name = field["name"]
                 current += f'@key(fields: "{key_name}") '
 
-        current += "{\n"
+            current += "{\n"
 
-        for field in schema["fields"]:
-            n = field["name"]
-            t = get_graphql_type(field["type"])
-            current += f"    {n}: {t}\n"
+            for field in schema["fields"]:
+                n = field["name"]
+                t = get_graphql_type(field["type"])
+                current += f"    {n}: {t}\n"
 
-        current += "}\n"
+            current += "}\n"
         classes[name] = current
 
     record_type_to_graphql(schema)
