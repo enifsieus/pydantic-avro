@@ -146,7 +146,6 @@ scalar JSONObject
 scalar Time
 scalar UUID
 
-
 """
     file_content += "\n\n".join(classes.values())
 
