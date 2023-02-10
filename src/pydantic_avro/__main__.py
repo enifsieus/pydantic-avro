@@ -14,9 +14,9 @@ def main(input_args: List[str]):
     parser_cache.add_argument("--asvc", type=str, dest="avsc", required=True)
     parser_cache.add_argument("--output", type=str, dest="output")
 
-    parser_cache2 = subparsers.add_parser("avro_to_graphql")
-    parser_cache2.add_argument("--asvc", type=str, dest="avsc", required=True)
-    parser_cache2.add_argument("--output", type=str, dest="output")
+    parce_cache_gql = subparsers.add_parser("avro_to_graphql")
+    parce_cache_gql.add_argument("--asvc", type=str, dest="avsc", required=True)
+    parce_cache_gql.add_argument("--output", type=str, dest="output")
 
     args = parser.parse_args(input_args)
 
