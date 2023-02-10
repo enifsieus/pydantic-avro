@@ -62,7 +62,7 @@ def avsc_to_graphql(schema: dict) -> str:
             record_type_to_graphql(t)
             py_type = t.get("name")
         elif t.get("type") == "map":
-            py_type = "JSONObject"
+            py_type = map_type_to_graphql(t)
         else:
             raise NotImplementedError(
                 f"Type {t} not supported yet, "
@@ -73,12 +73,31 @@ def avsc_to_graphql(schema: dict) -> str:
         else:
             return f"{py_type}!"
 
+    ## GraphQL does not support Map types so we have two choices:
+    ## Make custom types of the form "type Custom {key: String, value: GraphQLType}" which need custom resolvers
+    ## OR return them as non-queryable JSON structures using the JSONObject scalar
+    def map_type_to_graphql(t: dict) -> str:
+        value_type = get_graphql_type(t.get("values"))
+        map_name = f"Map{value_type}".replace("!", "")
+
+        ## Hack to check if this is an array
+        if "[" in map_name and "]" in map_name:
+            map_name = f'{map_name.replace("[", "").replace("]", "")}List'
+
+        current = f"""
+type {map_name} {{
+    key: String!,
+    value: {value_type}
+}}\n"""
+        classes[map_name] = current
+        return map_name
+
     def union_type_to_graphql(t: list) -> str:
         """Convert a single avro Union type to a graphql Union"""
         names = list(map(get_graphql_type, t))
         union_name = f'Union{"".join(names).replace("!", "")}'
         value = " | ".join(names).replace("!", "")
-        current = f"union {union_name} = {value}"
+        current = f"union {union_name} = {value}\n"
         classes[union_name] = current
         return union_name
 

@@ -60,17 +60,21 @@ def test_avsc_to_graphql_map():
             ],
         }
     )
+    print(graphql)
     expected = """
+type MapString {
+    key: String!,
+    value: String!
+}
+
+
 type Test {
-    col1: JSONObject!
+    col1: MapString!
 }"""
     assert expected in graphql
     assert gql(graphql)
 
 
-##todo(mje):
-## GraphQL does not support Map types so we have two choices - return them as non-queryable JSON structures,
-## Or we have custom types of the form type Custom {key: String, value: graphql type} which need custom resolvers
 def test_avsc_to_graphql_map_nested_object():
     graphql = avsc_to_graphql(
         {
@@ -90,8 +94,21 @@ def test_avsc_to_graphql_map_nested_object():
     )
 
     expected = """
+type Nested {
+    col1: String!
+}"""
+    assert expected in graphql
+
+    expected = """
+type MapNested {
+    key: String!,
+    value: Nested!
+}"""
+    assert expected in graphql
+
+    expected = """
 type Test {
-    col1: JSONObject!
+    col1: MapNested!
 }"""
     assert expected in graphql
     assert gql(graphql)
@@ -119,8 +136,14 @@ def test_avsc_to_graphql_map_nested_array():
     )
 
     expected = """
+type MapStringList {
+    key: String!,
+    value: [String!]!
+}
+
+
 type Test {
-    col1: JSONObject!
+    col1: MapStringList!
 }"""
     assert expected in graphql
     assert gql(graphql)
