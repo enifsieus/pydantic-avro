@@ -63,50 +63,62 @@ type Test {
 }"""
     assert expected in graphql
 
-#todo(mje): COME BACK TO THIS
-# def test_avsc_to_graphql_map_nested_object():
-#     graphql = avsc_to_graphql(
-#         {
-#             "name": "Test",
-#             "type": "record",
-#             "fields": [
-#                 {
-#                     "name": "col1",
-#                     "type": {
-#                         "type": "map",
-#                         "values": {"type": "record", "name": "Nested", "fields": [{"name": "col1", "type": "string"}]},
-#                         "default": {},
-#                     },
-#                 },
-#             ],
-#         }
-#     )
-#     print(graphql)
+##todo(mje):
+## GraphQL does not support Map types so we have two choices - return them as non-queryable JSON structures,
+## Or we have custom types of the form type Custom {key: String, value: graphql type} which need custom resolvers
+def test_avsc_to_graphql_map_nested_object():
+    graphql = avsc_to_graphql(
+        {
+            "name": "Test",
+            "type": "record",
+            "fields": [
+                {
+                    "name": "col1",
+                    "type": {
+                        "type": "map",
+                        "values": {"type": "record", "name": "Nested", "fields": [{"name": "col1", "type": "string"}]},
+                        "default": {},
+                    },
+                },
+            ],
+        }
+    )
+
+    expected = """
+type Test {
+    col1: JSONObject!
+}"""
+    assert expected in graphql
 #     assert "class Test(BaseModel):\n" "    col1: Dict[str, Nested]" in graphql
 #     assert "class Nested(BaseModel):\n" "    col1: str" in graphql
-#
-#
-# def test_avsc_to_graphql_map_nested_array():
-#     graphql = avsc_to_graphql(
-#         {
-#             "name": "Test",
-#             "type": "record",
-#             "fields": [
-#                 {
-#                     "name": "col1",
-#                     "type": {
-#                         "type": "map",
-#                         "values": {
-#                             "type": "array",
-#                             "items": "string",
-#                         },
-#                         "default": {},
-#                     },
-#                 },
-#             ],
-#         }
-#     )
-#     print(graphql)
+
+
+def test_avsc_to_graphql_map_nested_array():
+    graphql = avsc_to_graphql(
+        {
+            "name": "Test",
+            "type": "record",
+            "fields": [
+                {
+                    "name": "col1",
+                    "type": {
+                        "type": "map",
+                        "values": {
+                            "type": "array",
+                            "items": "string",
+                        },
+                        "default": {},
+                    },
+                },
+            ],
+        }
+    )
+
+    expected = """
+type Test {
+    col1: JSONObject!
+}"""
+    assert expected in graphql
 #     assert "class Test(BaseModel):\n" "    col1: Dict[str, List[str]]" in graphql
 
 
@@ -195,7 +207,7 @@ type Test {
 }"""
     assert expected in graphql
 
-##todo(mje): RETURN
+##todo(mje): There are no defaults in graphql schemas for reads
 # def test_default():
 #     graphql = avsc_to_graphql(
 #         {
@@ -211,7 +223,6 @@ type Test {
 #             ],
 #         }
 #     )
-#     print(graphql)
 #     assert (
 #         "class Test(BaseModel):\n"
 #         '    col1: str = "test"\n'
@@ -221,7 +232,6 @@ type Test {
 #         "    col4: bool = True\n"
 #         "    col5: bool = False\n" in graphql
 #     )
-#
 
 def test_enums():
     graphql = avsc_to_graphql(
