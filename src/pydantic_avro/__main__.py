@@ -2,8 +2,8 @@ import argparse
 import sys
 from typing import List
 
-from pydantic_avro.avro_to_pydantic import convert_file
 from pydantic_avro.avro_to_graphql import convert_graphql
+from pydantic_avro.avro_to_pydantic import convert_file
 
 
 def main(input_args: List[str]):
@@ -24,6 +24,7 @@ def main(input_args: List[str]):
         convert_file(args.avsc, args.output)
     elif args.sub_command == "avro_to_graphql":
         convert_graphql(args.avsc, args.output)
+
 
 def root_main():
     main(sys.argv[1:])

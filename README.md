@@ -41,6 +41,19 @@ pydantic-avro avro_to_pydantic --asvc /path/to/schema.asvc
 pydantic-avro avro_to_pydantic --asvc /path/to/schema.asvc --output /path/to/output.py
 ```
 
+### Avro schema to GraphQL
+
+Note that the schemas generated for graphQL are intended only for reads.
+Mutations and resolvers are not generated.
+
+```shell
+# Print to stdout
+pydantic-avro avro_to_graphql --asvc /path/to/schema.asvc
+
+# Save it to a file
+pydantic-avro avro_to_graphql --asvc /path/to/schema.asvc --output /path/to/output.py
+```
+
 
 ### Install for developers
 

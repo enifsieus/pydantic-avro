@@ -78,7 +78,7 @@ def avsc_to_graphql(schema: dict) -> str:
         names = list(map(get_graphql_type, t))
         union_name = f'Union{"".join(names).replace("!", "")}'
         value = " | ".join(names).replace("!", "")
-        current = f'union {union_name} = {value}'
+        current = f"union {union_name} = {value}"
         classes[union_name] = current
         return union_name
 
@@ -89,7 +89,7 @@ def avsc_to_graphql(schema: dict) -> str:
 
         if len(schema["symbols"]) > 0:
             for symbol in schema["symbols"]:
-                current += f'    {symbol}\n'
+                current += f"    {symbol}\n"
 
         current += "}\n"
         classes[name] = current

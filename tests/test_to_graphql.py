@@ -1,5 +1,6 @@
-from pydantic_avro.avro_to_graphql import avsc_to_graphql
 from ariadne import gql
+
+from pydantic_avro.avro_to_graphql import avsc_to_graphql
 
 
 def test_avsc_to_graphql_empty():
@@ -66,6 +67,7 @@ type Test {
     assert expected in graphql
     assert gql(graphql)
 
+
 ##todo(mje):
 ## GraphQL does not support Map types so we have two choices - return them as non-queryable JSON structures,
 ## Or we have custom types of the form type Custom {key: String, value: graphql type} which need custom resolvers
@@ -93,8 +95,6 @@ type Test {
 }"""
     assert expected in graphql
     assert gql(graphql)
-#     assert "class Test(BaseModel):\n" "    col1: Dict[str, Nested]" in graphql
-#     assert "class Nested(BaseModel):\n" "    col1: str" in graphql
 
 
 def test_avsc_to_graphql_map_nested_array():
@@ -124,7 +124,6 @@ type Test {
 }"""
     assert expected in graphql
     assert gql(graphql)
-#     assert "class Test(BaseModel):\n" "    col1: Dict[str, List[str]]" in graphql
 
 
 def test_avsc_to_graphql_logical():
@@ -200,9 +199,7 @@ def test_avsc_to_graphql_complex():
         }
     )
 
-    expected = """
-type Nested"""
-    assert expected in graphql
+    assert "type Nested" in graphql
 
     expected = """
 type Test {
@@ -213,31 +210,6 @@ type Test {
     assert expected in graphql
     assert gql(graphql)
 
-##todo(mje): There are no defaults in graphql schemas for reads
-# def test_default():
-#     graphql = avsc_to_graphql(
-#         {
-#             "name": "Test",
-#             "type": "record",
-#             "fields": [
-#                 {"name": "col1", "type": "string", "default": "test"},
-#                 {"name": "col2_1", "type": ["null", "string"], "default": None},
-#                 {"name": "col2_2", "type": ["string", "null"], "default": "default_str"},
-#                 {"name": "col3", "type": {"type": "map", "values": "string"}, "default": {"key": "value"}},
-#                 {"name": "col4", "type": "boolean", "default": True},
-#                 {"name": "col5", "type": "boolean", "default": False},
-#             ],
-#         }
-#     )
-#     assert (
-#         "class Test(BaseModel):\n"
-#         '    col1: str = "test"\n'
-#         "    col2_1: Optional[str] = None\n"
-#         '    col2_2: Optional[str] = "default_str"\n'
-#         '    col3: Dict[str, str] = {"key": "value"}\n'
-#         "    col4: bool = True\n"
-#         "    col5: bool = False\n" in graphql
-#     )
 
 def test_enums():
     graphql = avsc_to_graphql(
@@ -296,29 +268,23 @@ enum Status {
 def test_unions():
     graphql = avsc_to_graphql(
         {
-            "type" : "record",
-            "name" : "Test",
-            "fields" : [
+            "type": "record",
+            "name": "Test",
+            "fields": [
                 {
-                    "name" : "a_union",
-                    "type" : [
-                        "null", "long", "string",
+                    "name": "a_union",
+                    "type": [
+                        "null",
+                        "long",
+                        "string",
                         {
-                            "type" : "record",
-                            "name" : "ARecord",
-                            "fields" : [
-                                {
-                                    "name" : "values",
-                                    "type" : {
-                                        "type" : "map",
-                                        "values" : "string"
-                                    }
-                                }
-                            ]
-                        }
-                    ]
+                            "type": "record",
+                            "name": "ARecord",
+                            "fields": [{"name": "values", "type": {"type": "map", "values": "string"}}],
+                        },
+                    ],
                 }
-            ]
+            ],
         }
     )
 
