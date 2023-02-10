@@ -119,7 +119,7 @@ type {map_name} {{
         current = f"type {name} "
 
         if len(schema["fields"]) > 0:
-            # todo(mje): Naive federation logic - if there is a  field named id then use that as the Entity Key
+            # Naive federation logic - if there is a  field named id then use that as the Entity Key
             field = next((x for x in schema["fields"] if x["name"] == "id"), None)
             if field is not None:
                 key_name = field["name"]
