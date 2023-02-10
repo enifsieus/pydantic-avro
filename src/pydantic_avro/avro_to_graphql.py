@@ -30,13 +30,16 @@ def avsc_to_graphql(schema: dict) -> str:
             else:
                 raise NotImplementedError(f"Type {t} not supported yet")
         elif isinstance(t, list):
-            if "null" in t and len(t) == 2:
+            c = t.copy()
+
+            if "null" in t:
                 optional = True
-                c = t.copy()
                 c.remove("null")
+
+            if len(c) == 1:
                 py_type = get_graphql_type(c[0])
             else:
-                py_type = union_type_to_graphql(t)
+                py_type = union_type_to_graphql(c)
         elif t.get("logicalType") == "uuid":
             py_type = "UUID"
         elif t.get("logicalType") == "decimal":
@@ -120,7 +123,6 @@ extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@
 
 scalar Date
 scalar Decimal
-scalar DateTime
 scalar JSONObject
 scalar Time
 scalar UUID
