@@ -3,7 +3,7 @@ from typing import Optional, Union
 
 
 def avsc_to_graphql(schema: dict) -> str:
-    """Generate python code of pydantic of given Avro Schema"""
+    """Generate graphql schema types given Avro Schema"""
     if "type" not in schema or schema["type"] != "record":
         raise AttributeError("Type not supported")
     if "name" not in schema:
