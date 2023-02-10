@@ -80,7 +80,7 @@ def avsc_to_graphql(schema: dict) -> str:
         value_type = get_graphql_type(t.get("values"))
         map_name = f"Map{value_type}".replace("!", "")
 
-        ## Hack to check if this is an array
+        ## Hack to generate a valid and meaningful name for array types
         if "[" in map_name and "]" in map_name:
             map_name = f'{map_name.replace("[", "").replace("]", "")}List'
 
